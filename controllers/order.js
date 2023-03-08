@@ -1,5 +1,17 @@
 const { query } = require("express");
 const Order = require("../models/order");
+const nodemailer = require("nodemailer");
+const sendgridTransport = require("nodemailer-sendgrid-transport");
+
+const transporter = nodemailer.createTransport(
+  sendgridTransport({
+    auth: {
+      // api_user: "duynguyen",
+      api_key:
+        "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",
+    },
+  })
+);
 
 exports.postOrder = (req, res, next) => {
   const data = req.body;
@@ -28,6 +40,12 @@ exports.postOrder = (req, res, next) => {
         status: false,
       });
     } else {
+      transporter.sendMail({
+        to: "nnduy1999@gmail.com",
+        from: "duynnfx17791@funix.edu.vn",
+        subject: "get mail",
+        html: "<h1>send mail</h1>",
+      });
       res.json({
         status: true,
       });
