@@ -4,7 +4,10 @@ module.exports = {
   init: (httpServer) => {
     io = require("socket.io")(httpServer, {
       cors: {
-        origin: ["http://localhost:3001", "http://localhost:3000"], //http://localhost:3001
+        origin: [
+          "https://client-ecommerce-asm3.netlify.app/",
+          "https://admin-ecommerce-asm3.netlify.app/",
+        ], //http://localhost:3001
         allowedHeaders: ["my-custom-header"],
         credentials: true,
       },
