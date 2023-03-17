@@ -42,17 +42,28 @@ exports.getPagination = (req, res, next) => {
   // res.json({});
 };
 exports.getmail = (req, res, next) => {
-  console.log("gui");
-  console.log(req.role);
-  transporter.sendMail({
-    to: "nnduy1999@gmail.com",
-    from: "duynnfx17791@funix.edu.vn",
-    subject: "get mail",
-    html: "<h1>hihihihih</h1>",
-  });
-  console.log("đã gửi thư");
-  res.json({ a: "a" });
+  // console.log("gui");
+  // console.log(req.role);
+  console.log("session", req.session.id);
+  // transporter.sendMail({
+  //   to: "nnduy1999@gmail.com",
+  //   from: "duynnfx17791@funix.edu.vn",
+  //   subject: "get mail",
+  //   html: "<h1>hihihihih</h1>",
+  // });
+  // console.log("đã gửi thư");
+  // req.session.destroy((err) => {
+  //   console.log(err);
+  //   // res.redirect("/");
+  // });
+  const connectSid = req.cookies["connect.sid"];
+  res.json({ a: connectSid });
 };
+
+exports.testsession = (req, res, next) => {
+  res.send(req.session.isLoggedIn);
+};
+
 exports.postCreatProduct = (req, res, next) => {
   const { name, price, category, shortDesc, longDesc, img } = req.body;
   console.log("#58", req.role);

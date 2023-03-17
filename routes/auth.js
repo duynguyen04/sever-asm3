@@ -19,15 +19,16 @@ router.post(
 );
 router.post(
   "/users/signin",
-  [
-    body("email").isEmail().normalizeEmail(),
-    body("password").trim().isLength({ min: 3 }),
-  ],
+  // [
+  //   body("email").isEmail().normalizeEmail(),
+  //   body("password").trim().isLength({ min: 3 }),
+  // ],
   authControllers.postSignin
 );
 router.post("/users/signin-admin", authControllers.postSigninAdmin);
 
 router.get("/users/:id", authControllers.getDetailData);
 router.get("/users", isAuth, authControllers.getAlluser);
+router.post("/logout", isAuth, authControllers.postLogout);
 
 module.exports = router;

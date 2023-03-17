@@ -43,15 +43,14 @@ exports.postSignup = (req, res, next) => {
 };
 
 exports.postSignin = (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    const error = new Error("Validation failed.");
-    error.statusCode = 422;
-    error.data = errors.array();
-    throw error;
-  }
+  // const errors = validationResult(req);
+  // if (!errors.isEmpty()) {
+  //   const error = new Error("Validation failed.");
+  //   error.statusCode = 422;
+  //   error.data = errors.array();
+  //   throw error;
+  // }
   const { email, password } = req.body;
-  console.log(email, password);
   let loadedUser;
   User.findOne({ email: email })
     .then((user) => {
@@ -61,6 +60,8 @@ exports.postSignin = (req, res, next) => {
         throw error;
       }
       loadedUser = user;
+      console.log("luu ");
+
       return bcrypt.compare(password, user.password);
     })
     .then((isEqual) => {
@@ -69,15 +70,10 @@ exports.postSignin = (req, res, next) => {
         error.statusCode = 401;
         throw error;
       }
-      const token = jwt.sign(
-        {
-          email: loadedUser.email,
-          userId: loadedUser._id.toString(),
-        },
-        "somesupersecretsecret",
-        { expiresIn: "1h" }
-      );
-      res.status(200).json({ token: token, userId: loadedUser._id.toString() });
+      req.session.isLoggedIn = true;
+      req.session.user = loadedUser;
+      req.session.save();
+      res.status(200).json({ userId: loadedUser._id.toString() });
     })
     .catch((err) => {
       if (!err.statusCode) {
@@ -114,17 +110,10 @@ exports.postSigninAdmin = (req, res, next) => {
         error.statusCode = 401;
         throw error;
       }
-      const token = jwt.sign(
-        {
-          email: loadedUser.email,
-          userId: loadedUser._id.toString(),
-          role: loadedUser.role,
-        },
-        "somesupersecretsecret",
-        { expiresIn: "1h" }
-      );
+      req.session.isLoggedIn = true;
+      req.session.user = loadedUser;
+      req.session.save();
       res.status(200).json({
-        token: token,
         userId: loadedUser._id.toString(),
         role: role,
       });
@@ -153,5 +142,11 @@ exports.getDetailData = (req, res, next) => {
 exports.getAlluser = (req, res, next) => {
   User.find().then((data) => {
     res.json(data);
+  });
+};
+exports.postLogout = (req, res, next) => {
+  req.session.destroy((err) => {
+    console.log(err);
+    // res.redirect("/");
   });
 };

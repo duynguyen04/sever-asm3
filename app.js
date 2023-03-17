@@ -1,5 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const session = require("express-session");
+const cookieParser = require("cookie-parser");
+const MongoDBStore = require("connect-mongodb-session")(session);
 
 const cors = require("cors");
 const authRoute = require("./routes/auth");
@@ -8,16 +11,39 @@ const orderRoute = require("./routes/order");
 const chatRoute = require("./routes/chat");
 const bodyParser = require("body-parser");
 
-const cookieParser = require("cookie-parser");
 const MONGODB_URI =
   "mongodb+srv://duy:1@cluster0.kfrppwg.mongodb.net/?retryWrites=true&w=majority";
 
+const store = new MongoDBStore({
+  uri: MONGODB_URI,
+  collection: "sessions",
+});
 const app = express();
+app.use(cookieParser());
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:3000", "http://localhost:3001"],
+    methods: ["POST", "PUT", "GET", "OPTIONS", "HEAD"],
+    credentials: true,
+  })
+);
+app.use(
+  session({
+    secret: "my secret",
+    resave: false,
+    saveUninitialized: false,
+    store: store,
+    cookie: {
+      maxAge: 1000 * 60 * 60, //1h
+      secure: false,
+      sameSite: "Lax",
+    },
+  })
+);
 
 app.use(authRoute);
 app.use(productRoute);

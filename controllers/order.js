@@ -43,8 +43,44 @@ exports.postOrder = (req, res, next) => {
       transporter.sendMail({
         to: "nnduy1999@gmail.com",
         from: "duynnfx17791@funix.edu.vn",
-        subject: "get mail",
-        html: "<h1>send mail</h1>",
+        subject: "send mail",
+        html: `
+        <div>
+            <h1>Xin chào ${data.fullname}</h1>
+            <div>Phone: ${data.phone}</div>
+            <div>Addres: ${data.address}</div>
+            <table>
+              <tr>
+                <th>Tên sản phẩm</th>
+                <th>Hình ảnh</th>
+                <th>Giá</th>
+                <th>Số lượng</th>
+                <th>Thành tiền</th>
+              </tr>
+              ${
+                cartItems &&
+                cartItems
+                  .map(
+                    (item) => `
+                  <tr>
+                    <td>${item.nameProduct}</td>
+                    <td>${item.img}</td>
+                    <td>${item.priceProduct}</td>
+                    <td>${item.quantity}</td>
+                    <td>
+                      ${item.quantity}*${item.priceProduct}
+                    </td>
+                  </tr>
+                `
+                  )
+                  .join("")
+              }
+            </table>
+            <h1>Tổng thanh toán</h1>
+            <h1>${data.total}</h1>
+            <h1>Cảm ơn bạn!</h1>
+          </div>
+      `,
       });
       res.json({
         status: true,

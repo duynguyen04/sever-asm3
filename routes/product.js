@@ -13,6 +13,7 @@ router.get("/products/:id", productControllers.getDetail);
 
 router.get("/pagination", productControllers.getPagination);
 router.get("/getmail", productControllers.getmail);
+router.get("/test", productControllers.testsession);
 
 router.post("/newproduct", isAuth, productControllers.postCreatProduct);
 router.post("/delete-product/:id", isAuth, productControllers.postDelete);
